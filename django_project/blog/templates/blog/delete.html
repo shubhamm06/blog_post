@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+{%block title%}Delete{%endblock%}
+{% block content %}
+{%if user.is_authenticated%}
+{%if post.author.id == user.id%}
+<form method="post">
+  {%csrf_token%}
+  <b>Are you sure you want to delete?</b>
+  <br><br>
+  <button class='btn btn-danger'>Delete</button>
+</form>
+{%endif%}
+{%else%}
+<h3>You are logged out.</h3>
+<a href="{% url 'login' %}"><button class='btn btn-secondary'>Login Again</button></a>
+<br>
+{%endif%}
+<br>
+<br>
+{% endblock content %}

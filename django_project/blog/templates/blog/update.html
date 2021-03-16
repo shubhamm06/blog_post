@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{%block title%}Update-Post{%endblock%}
+{% block content %}
+{%if user.is_authenticated %}
+{%if post.author.id == user.id%}
+<h1>Update Post....</h1>
+<br>
+<form method="post">
+  {%csrf_token%}
+  {{form.media}}
+  {{form|crispy}}
+  <button class='btn btn-secondary'>Update</button>
+</form>
+<br>
+{%endif%}
+{%else%}
+<h3>You are logged out.</h3>
+<br>
+<a href="{% url 'login' %}"><button class='btn btn-secondary'>Login Again</button></a>
+{%endif%}
+<br>
+<br>
+{% endblock content %}
