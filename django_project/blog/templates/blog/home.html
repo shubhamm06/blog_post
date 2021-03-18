@@ -1,11 +1,18 @@
 {% extends "blog/base.html" %}
+{%load static%}
 {%block title%}Home{%endblock%}
 {% block content %}
 {% for post in object_list%}
 <article class="media content-section">
+    <!-- <img class="rounded-circle article-img" width src="{{post.author.profile.image.url}}" alt="oopsie"> -->
+    {%if post.author.profile.image.url%}
+    <img class="rounded-circle article-img" src="{{post.author.profile.image.url}}" alt="oopsie">
+    {%else%}
+    <img class="rounded-circle article-img" src="{% static 'blog/images/not-found.png' %}" alt="oopsie">
+    {% endif %}
     <div class="media-body">
         <div class="article-metadata">
-            <a class="mr-2" href="#">{{ post.author }}</a>
+            <a class="mr-2" href="{%url 'profile' %}">{{ post.author }}</a>
             <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             {%if user.is_authenticated %}
             {%if post.author.id == user.id%}
@@ -19,9 +26,27 @@
         {%else%}
         <p class="article-content">{{ post.content|truncatewords:30 |safe }}</p>
         {%endif%}
-
         <a class="article-title" style="float: right"
             href="{%url 'category-post' post.category|slugify %}">{{post.category}}</a>
+        <!-- <div class="media">
+            <div class="media-body">
+                <h2><a class="article-title" href="{%url 'article-detailer' post.pk%}">{{ post.title }}</a></h2>
+                {%if post.snippet%}
+                {{post.snippet}}
+                {%else%}
+                <p class="article-content">{{ post.content|truncatewords:30 |safe }}</p>
+                {%endif%}
+                <a class="article-title" style="float: right"
+                    href="{%url 'category-post' post.category|slugify %}">{{post.category}}</a>
+            </div>
+        </div> -->
+        <!-- <img class="rounded-circle account-img" src="{{post.author.profile.image.url}}" alt="oopsie">
+        <h2><a class="article-title" href="{%url 'article-detailer' post.pk%}">{{ post.title }}</a></h2>
+        {%if post.snippet%}
+        {{post.snippet}}
+        {%else%}
+        <p class="article-content">{{ post.content|truncatewords:30 |safe }}</p>
+        {%endif%} -->
     </div>
 </article>
 {% endfor %}

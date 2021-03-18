@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 {% extends "blog/base.html" %}
+{%load static%}
 {% block title %}{{post.title}}{%endblock%}
 {% block content %}
-<h1>{{post.title}}</h1>
+<div class="media">
+  <!-- <img class="rounded-circle article-img" width src="{{post.author.profile.image.url}}" alt="oopsie"> -->
+  {%if post.author.profile.image.url%}
+  <img class="rounded-circle account-img" src="{{post.author.profile.image.url}}" alt="oopsie">
+  {%else%}
+  <img class="rounded-circle account-img" src="{% static 'blog/images/not-found.png' %}" alt="oopsie">
+  {% endif %}
+  <div class="media-body">
+    <h1>{{post.title}}</h1>
+  </div>
+</div>
+<br>
+
 <h6 class="text-info">By: {{post.author}}</h6>
 {% if user.is_authenticated %}
 <form action="{% url 'blogpost_like' object.id %}" method="POST">
@@ -36,3 +49,5 @@
 <br>
 <br>
 {% endblock content %}
+
+<!-- <a class="nav-item nav-link" href="{% url 'profile' post.author.profile.id %}">Profile</a> -->

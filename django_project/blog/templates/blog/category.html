@@ -1,10 +1,16 @@
 {% extends "blog/base.html" %}
+{%load static%}
 {%block title%}Category{%endblock%}
 {% block content %}
 <h3>{{cats}}</h3>
 <br>
 {% for post in category_posts %}
 <article class="media content-section">
+    {%if post.author.profile.image.url%}
+    <img class="rounded-circle article-img" src="{{post.author.profile.image.url}}" alt="oopsie">
+    {%else%}
+    <img class="rounded-circle article-img" src="{% static 'blog/images/not-found.png' %}" alt="oopsie">
+    {% endif %}
     <div class="media-body">
         <div class="article-metadata">
             <a class="mr-2" href="#">{{ post.author }}</a>
