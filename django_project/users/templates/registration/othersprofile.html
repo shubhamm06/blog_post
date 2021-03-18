@@ -1,0 +1,23 @@
+{% extends "blog/base.html" %}
+{% load static%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <div class="media">
+        {%if page_user.image.url %}
+        <img class="rounded-circle account-img" src="{{page_user.image.url}}" alt="oopsie">
+        {%else%}
+        <img class="rounded-circle account-img" src="{% static 'blog/images/not-found.png' %}" alt="oopsie">
+        {% endif %}
+        <div class="media-body">
+            <h2 class="account-heading">{{page_user.user}}</h2>
+            {%if page_user.instagram_url %}
+            <a href="{{page_user.instagram_url}}"><small><b>Instagram</b></small></a>
+            {%endif%}
+            <br>
+            <p class="text-secondary">Bio : {{page_user.bio}}</p>
+        </div>
+    </div>
+    <br>
+</div>
+{% endblock content %}

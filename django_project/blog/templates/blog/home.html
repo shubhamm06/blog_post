@@ -12,7 +12,9 @@
     {% endif %}
     <div class="media-body">
         <div class="article-metadata">
-            <a class="mr-2" href="{%url 'profile' %}">{{ post.author }}</a>
+            {%if post.author.profile.id%}
+            <a class="mr-2" href="{%url 'others-profile' post.author.profile.id %}">{{ post.author }}</a>
+            {%endif%}
             <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             {%if user.is_authenticated %}
             {%if post.author.id == user.id%}

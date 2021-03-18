@@ -13,6 +13,18 @@ from django.contrib import messages
 # Create your views here.
 
 
+class OthersProfileView(generic.DetailView):
+    model = Profile
+    template_name = 'registration/othersprofile.html'
+
+    def get_context_data(self, *args, **kwargs):
+        users = Profile.objects.all()
+        data = super(OthersProfileView, self).get_context_data(*args, **kwargs)
+        page_user = get_object_or_404(Profile, id=self.kwargs['pk'])
+        data["page_user"] = page_user
+        return data
+
+
 class PasswordChange(PasswordChangeView):
     # form_class = UserUpdateFor
     template_name = 'registration/password.html'
@@ -29,9 +41,6 @@ class UserRegisterView(SuccessMessageMixin, generic.CreateView):
         return f'Account has been created for {usernamer}'
 
 
-name = 'shubham'
-
-
 class UserEditView(SuccessMessageMixin, generic.UpdateView):
     form_class = UserUpdateForm
     template_name = 'registration/updateuser.html'
@@ -40,7 +49,6 @@ class UserEditView(SuccessMessageMixin, generic.UpdateView):
 
     def get_success_message(self, cleaned_data):
         usernamer = cleaned_data.get('first_name')
-        name = username
         return f'Profile has been updated for {usernamer}'
 
     def get_object(self):
@@ -51,15 +59,33 @@ class ProfileCreateView(SuccessMessageMixin, CreateView):
     model = Profile
     template_name = 'registration/createprofile.html'
     success_url = reverse_lazy('profile')
-    fields = '__all__'
+    fields = ['image', 'instagram_url', 'bio']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get_success_message(self, cleaned_data):
-        usernamer = cleaned_data.get('first_name')
-        return f'Profile has been created for {name}'
+        return f'Profile has been created successfully'
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        p_form = ProfileUpdateForm(
+            request.POST, request.FILES, instance=request.user.profile)
+        if p_form.is_valid():
+            p_form.save()
+            messages.success(
+                request, f'Your profile has been updated successfully')
+            return redirect('profile')
+    else:
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {"p_form": p_form}
+
+    return render(request, "registration/updateprofile.html", context)
 
 
 # class ProfileEditView(SuccessMessageMixin, generic.UpdateView):
@@ -111,21 +137,3 @@ def profile(request):
     #     'u_form': u_form,
     #     'p_form': p_form,
     # }
-
-
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        user = request.user
-        p_form = ProfileUpdateForm(
-            request.POST, request.FILES, instance=request.user.profile)
-        if p_form.is_valid():
-            p_form.save()
-            messages.success(request, f'Your account has been updated')
-            return redirect('profile')
-    else:
-        p_form = ProfileUpdateForm(instance=request.user.profile)
-
-    context = {"p_form": p_form}
-
-    return render(request, "registration/updateprofile.html", context)
