@@ -8,6 +8,7 @@ from django.views import generic
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from .models import Profile
+from django.contrib import messages
 
 # Create your views here.
 
@@ -61,19 +62,19 @@ class ProfileCreateView(SuccessMessageMixin, CreateView):
         return f'Profile has been created for {name}'
 
 
-class ProfileEditView(SuccessMessageMixin, generic.UpdateView):
-    form_class = ProfileUpdateForm
-    model = Profile
-    template_name = 'registration/updateprofile.html'
-    # fields = ['image', 'instagram_url', 'bio']
-    success_url = reverse_lazy('profile')
+# class ProfileEditView(SuccessMessageMixin, generic.UpdateView):
+#     # form_class = ProfileUpdateForm
+#     model = Profile
+#     template_name = 'registration/updateprofile.html'
+#     fields = ['image', 'instagram_url', 'bio']
+#     success_url = reverse_lazy('profile')
 
-    def get_success_message(self, cleaned_data):
-        usernamer = cleaned_data.get('first_name')
-        return f'Profile has been updated for {name}'
+#     def get_success_message(self, cleaned_data):
+#         usernamer = cleaned_data.get('first_name')
+#         return f'Profile has been updated for {name}'
 
-    def get_object(self):
-        return self.request.user
+#     def get_object(self):
+#         return self.request.user
 
 
 # class profile(DetailView):
@@ -110,3 +111,21 @@ def profile(request):
     #     'u_form': u_form,
     #     'p_form': p_form,
     # }
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        p_form = ProfileUpdateForm(
+            request.POST, request.FILES, instance=request.user.profile)
+        if p_form.is_valid():
+            p_form.save()
+            messages.success(request, f'Your account has been updated')
+            return redirect('profile')
+    else:
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {"p_form": p_form}
+
+    return render(request, "registration/updateprofile.html", context)

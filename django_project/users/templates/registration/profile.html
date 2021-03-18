@@ -12,9 +12,10 @@
         <div class="media-body">
             <h2 class="account-heading">{{user.username}}</h2>
             <p class="text-secondary">{{user.email}}</p>
-            {%if profile.instagram_url %}
+            {%if user.profile.instagram_url %}
             <a href="{{user.profile.instagram_url}}"><small><b>Instagram</b></small></a>
             {%endif%}
+            <br>
             <p class="text-secondary">Bio : {{user.profile.bio}}</p>
         </div>
     </div>
@@ -27,8 +28,8 @@
             {{p_form|crispy}}
         </fieldset> -->
     <div class="form-group">
-        {%if user.profile%}
-        <a href="{%url 'profile-edit' user.profile.id %}"><button class="btn btn-outline-info" type="submit">Update
+        {%if user.profile.id %}
+        <a href="{%url 'profile-edit' %}"><button class="btn btn-outline-info" type="submit">Update
                 Profile</button></a>
         {%else%}
         <a href="{%url 'profile-create' %}"><button class="btn btn-outline-info" type="submit">Create
